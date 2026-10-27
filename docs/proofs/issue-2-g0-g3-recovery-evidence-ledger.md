@@ -13,7 +13,7 @@
 | README blob | `52cbe58095641a0557ae7fd5c14ed56a30496fea` |
 | Source-inspection date | 2026-10-26 |
 | Runtime evidence | [G1 receipt, 2026-10-27](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40488286520) for recovery source `4d529ea7928ceab641ea11fd3daa83aec602025c`, rooted at the baseline below |
-| Browser evidence | Not recorded in this ledger |
+| Browser evidence | [G2 static-specimen receipt](../evidence/g2/receipt.json), 2026-10-27 13:45 UTC (09:45 ET); homepage only, no API backend |
 
 The top-level README previously described an aspirational artisan marketplace, while the application source implements an A-Team Repair Solutions contractor-service prototype. The application commits inspected are dated 2026-03-03; the README baseline commit is dated 2026-05-29. Commit metadata for the inspected application work records Replit Agent-assisted changes. Human design ownership, the scope of agent assistance, and rights/permissions for media remain unconfirmed.
 
@@ -60,38 +60,82 @@ The receipt proves only the named commands for that recovery source. It does not
 
 ## G2 — browser proof matrix
 
-**Result: not run.**
+**Result: partially recorded; not passed.** One honest receipt exists for the static specimen homepage at 375px and 1440px. Every interactive flow remains unverified because the specimen has no API backend.
 
-Use an isolated, disposable database only; never enter real leads or client data. Capture a dated screenshot plus browser/version, viewport, URL, action, expected result, observed result, and pass/fail for every row.
+### Receipt: static specimen homepage
 
-| Flow | 375px | 1440px | Required observation |
+| Field | Recorded value |
+| --- | --- |
+| URL | `https://artisan-hub-specimen.vercel.app/` |
+| Captured | 375px: 2026-10-27T13:45:25Z (09:45:25 ET); 1440px: 2026-10-27T13:45:29Z (09:45:29 ET) |
+| Browser | Headless Google Chrome 156.0.8078.47 via Playwright; `networkidle` + 2.5 s settle; full-page capture |
+| Viewports | 375×812 (page height 5795px) and 1440×900 (page height 3518px) |
+| Screenshots | [`docs/evidence/g2/g2-375.png`](../evidence/g2/g2-375.png), [`docs/evidence/g2/g2-1440.png`](../evidence/g2/g2-1440.png) |
+| Raw receipt | [`docs/evidence/g2/receipt.json`](../evidence/g2/receipt.json) (headings, links, buttons, console, HTTP errors) |
+| `pageerror` | None at either viewport |
+| Console errors | 3 per viewport: `404` for `/api/gallery`, `/api/testimonials`, `/api/articles` |
+| Horizontal overflow | None observed (`scrollWidth` equals viewport width at both sizes) |
+| UI present | Header nav (Home, Services, Gallery, Articles, Show My Space, AI Visualizer; hamburger at 375px), `tel:` link, "Free Estimate" → `/schedule`; hero with "Get a Free Video Estimate" and "See Our Work"; ten service category cards → `/services`; philosophy section; CTA band to `/visualizer` and `/show-my-space`; footer nav |
+| UI absent | Homepage testimonial, gallery, and article sections are data-driven and get no data (the API returns 404) |
+| Client routing | Navigating in-app to `/services`, `/visualizer`, `/gallery` renders those pages with no `pageerror`. A **direct** request for any deep link (for example `GET /services`) returns Vercel `404 NOT_FOUND`: the deployment has no SPA rewrite |
+
+**Truthfulness defect visible in the capture:** the rendered homepage still shows "500+ Projects Completed", "12+ Years Experience", "4.9★ Average Rating", and "100% Satisfaction Rate" (see G0). These screenshots are **not recruiter-safe** until those claims are removed or substantiated. They are not fixed here: this was a copy change, not a one-line rendering bug, and so out of narrow-fix scope.
+
+### Matrix
+
+| Flow | 375px | 1440px | Observation |
 | --- | --- | --- | --- |
-| Service handoff | pending | pending | Selecting “Book This Package” opens Schedule and preserves the intended service |
-| Estimate validation | pending | pending | Blank and malformed inputs expose visible errors; valid disposable input reaches an observed server response |
-| Lead validation | pending | pending | Same error/success boundary, without treating a success screen as a real follow-up promise |
-| Gallery filter/modal | pending | pending | Filter changes items; card opens one modal; close control, Escape, overlay, and focus return work as observed |
-| Touch interaction | pending | n/a | One tap produces one intended modal action; check for click/touch duplicate activation |
-| Comparison slider | pending | pending | Mouse/touch movement behaves as observed; before/after labels remain truthful to provenance |
-| Responsive layout | pending | pending | No horizontal clipping or unreachable primary controls |
-| Reduced motion | pending | pending | Record browser preference state and observed behavior; no compliance claim from this check alone |
-| AI disabled/error | pending | pending | With provider intentionally unavailable, the UI presents the observed failure state without implying a generated concept |
+| Homepage render / responsive layout | **pass (static)** | **pass (static)** | It renders and has no horizontal overflow or `pageerror`. Data-driven sections are empty |
+| Service handoff | pending | pending | `/services` renders via client routing; "Book This Package" → Schedule was not exercised |
+| Estimate validation | **blocked** | **blocked** | The specimen has no `/api/estimates`. It needs a disposable Express + Postgres runtime |
+| Lead validation | **blocked** | **blocked** | Same as above (`/api/leads`) |
+| Gallery filter/modal | **fail on specimen** | **fail on specimen** | `/api/gallery` returns 404, so the specimen has no items to filter or open |
+| Touch interaction | **blocked** | n/a | It depends on gallery items |
+| Comparison slider | **blocked** | **blocked** | It depends on gallery items |
+| Reduced motion | pending | pending | Not recorded |
+| AI disabled/error | pending | pending | On the specimen, `POST /api/visualize` returns 404, so the provider is effectively unavailable. The UI error state was not captured |
 
 The gallery source has both `onClick` and `onTouchEnd` card handlers. It calls `preventDefault()` in the touch handler, but the one-tap/one-action behavior still requires browser evidence.
 
 ## G3 — operational and trust boundaries
 
-**Result: not passed.**
+**Result: boundaries documented from source and the live specimen; the trust gate itself is not passed** (unsupported runtime claims remain in UI copy).
 
-1. **Booking:** `POST /api/estimates` stores a record; no calendar integration, availability check, email sender, or Meet-link generator was found in the inspected route. The Schedule success UI promises email within two hours and a personalized Google Meet link; do not use it as proof of working booking.
-2. **Lead operations:** `POST /api/leads` persists data. No CRM handoff, notification, consent retention policy, or response-time mechanism was located in the inspected paths.
-3. **Testimonials and metrics:** seeded names and homepage statistics are not evidence of clients, ratings, adoption, completed projects, licensure, insurance, or satisfaction.
-4. **Media:** image presence in `client/public/images` or `attached_assets` does not establish authorization, project identity, location, or before/after continuity. A project-level asset register must record owner/permission, source, pair ID, and approved display context before publication.
-5. **AI:** the route forms prompts from user-entered room details and returns a generated image when its provider configuration works. It is a concept visualizer only; it cannot support construction, safety, price, code-compliance, or feasibility claims.
-6. **Accessibility:** semantic and keyboard-oriented source patterns exist in the gallery, but no assistive-technology, keyboard, contrast, focus-order, or reduced-motion verification record exists. Do not claim accessibility compliance.
+### Route inventory (source: `server/routes.ts`, wired by `server/index.ts`)
+
+| Route | Backing | What it does | What it does **not** guarantee |
+| --- | --- | --- | --- |
+| `GET /api/gallery[?category=]` | Express → Drizzle/Postgres (`server/storage.ts`, `server/db.ts`) | Returns `gallery_items` rows | Media permission, project identity, or valid before/after pairs. Rows come from `seedDatabase()` in `server/routes.ts` when the table is empty; several seed entries reuse one image as both "before" and "after" |
+| `GET /api/articles`, `GET /api/articles/:slug` | Express → Postgres | Returns seeded articles (404 if slug missing) | Expertise or licensure. Seed copy says "we are licensed electricians", which is unsubstantiated |
+| `GET /api/testimonials` | Express → Postgres | Returns `testimonials` rows | Authenticity. All five are inserted by `seedDatabase()` (`Jennifer M.`, `David K.`, …) and have no consent or attribution evidence |
+| `POST /api/leads` | Express → `insertLeadSchema.parse` → Postgres | Stores a lead (201) or returns 400 with the Zod message | Notification, CRM handoff, a response-time SLA, or a retention/consent policy. Nothing beyond the insert exists |
+| `POST /api/estimates` | Express → `insertVideoEstimateSchema.parse` → Postgres | Stores a video-estimate request | A **booking**: there is no calendar, availability check, email sender, or Meet-link generation. The `Schedule.tsx` success copy over-promises |
+| `POST /api/visualize` | Express → OpenAI SDK (`AI_INTEGRATIONS_OPENAI_API_KEY` / `_BASE_URL`, server env only) | Gets a text concept (`gpt-5.2`) and then an image (`gpt-image-1`). Returns 400 if `description` is missing, **502** if the image provider returns no `b64_json`, and 500 on any thrown error | Output quality, feasibility, safety, code compliance, cost, or latency. There is no rate limit or auth, so anyone who can reach the server can spend provider credits |
+
+**Not wired:** the `server/replit_integrations/{chat,image,audio,batch}` modules are not imported by `server/index.ts` or `server/routes.ts`, so they expose no routes. Do not cite them as features.
+
+**Empty provider responses:** if the chat completion returns no content, `visualization` becomes `""` and image generation still runs. If the image response is empty, the route returns 502 "Image generation returned no image data". `SpaceVisualizer.tsx` shows an error toast when the response is not ok. Missing provider env causes the SDK call to throw, and the route returns 500 "Failed to generate visualization".
+
+**Empty database:** on boot, `registerRoutes` runs `seedDatabase().catch(console.error)`. With an empty DB, it inserts prototype gallery, article, and testimonial content. This seeded content is **prototype fixture data, not evidence**.
+
+**Static vs. server (live specimen, observed 2026-10-27 13:45 UTC):** `artisan-hub-specimen.vercel.app` serves the Vite client build only. Every `/api/*` path returns Vercel 404, so on the specimen **no call reaches Express or a database**: no leads or estimates can be stored and no AI provider is called. Forms there can only reach their client-side validation or error states.
+
+**Secrets:** the only server secrets referenced are `DATABASE_URL` (`server/db.ts`) and `AI_INTEGRATIONS_OPENAI_*` (`server/routes.ts`). A source grep finds no `process.env`/`import.meta.env` reads under `client/src`. A grep of the deployed bundle `/assets/index-DxLJ-Zkg.js` finds no `sk-…` keys, `AI_INTEGRATIONS*`, `DATABASE_URL`, or `OPENAI` strings. This shows absence in that bundle at that time only, not a secrets-management audit.
+
+### Non-claims (must hold for any recruiter-facing use)
+
+1. **Booking:** no production booking, calendar, confirmation email, or Meet link.
+2. **Lead operations:** persistence only (on a server deployment); none on the specimen.
+3. **Testimonials and metrics:** seeded testimonials and homepage statistics (500+, 12+, 4.9★, 100%, "Licensed & insured", "Satisfaction guaranteed") are not evidence of anything.
+4. **Media:** there is no permission, chain-of-custody, or pair-validity record. A project-level asset register (owner/permission, source, pair ID, display context) is required before publication.
+5. **AI:** a concept visualizer only, unauthenticated and unmetered. It cannot support construction, safety, price, code-compliance, or feasibility claims.
+6. **Accessibility:** no assistive-technology, keyboard, contrast, focus-order, or reduced-motion verification record. Do not claim compliance.
 
 ## Next bounded verification action
 
-G1 is recorded for the recovery source above; G2 remains unrun. Start G2 only in a disposable runtime with a non-production database, then attach the matrix’s dated browser receipts. Keep the public-facing case study blocked until the booking, testimonial, media, and AI boundaries above are either removed from its captures or independently evidenced.
+1. Remove or substantiate the homepage statistics and the over-promising Schedule success copy, then recapture G2 at 375px and 1440px.
+2. Run the server build against a disposable Postgres (non-production), then fill the blocked G2 rows (estimate, lead, gallery, touch, slider, AI-unavailable).
+3. Optionally add an SPA rewrite to the specimen so deep links do not 404. Note the specimen has no API backend in any recruiter-facing caption.
 
 ## Evidence boundary
 
