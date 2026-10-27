@@ -1,0 +1,71 @@
+name: Recovery G1 baseline verification
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/recovery-g1.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "script/**"
+      - "server/**"
+      - "shared/**"
+      - "client/**"
+      - "tsconfig.json"
+      - "vite.config.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clean-install-typecheck-build:
+    name: Clean install, type check, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out recovery branch with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pin the application baseline
+        id: baseline
+        run: |
+          git checkout c43c34f328870e7b66dc7b42deac673dbd91f0e1
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+          cache: npm
+
+      - name: Record runtime
+        run: |
+          {
+            echo "## G1 runtime receipt"
+            echo
+            echo "- Baseline SHA: \`${{ steps.baseline.outputs.sha }}\`"
+            echo "- Runner: \`$(uname -srm)\`"
+            echo "- Node: \`$(node --version)\`"
+            echo "- npm: \`$(npm --version)\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Type check
+        run: npm run check
+
+      - name: Production build
+        run: npm run build
+
+      - name: Record result boundary
+        if: always()
+        run: |
+          {
+            echo
+            echo "The completed commands above establish only clean-install, TypeScript, and build outcomes for the pinned source snapshot."
+            echo "They do not establish browser behavior, accessibility compliance, booking, testimonial authenticity, media rights, or production AI operation."
+          } >> "$GITHUB_STEP_SUMMARY"
