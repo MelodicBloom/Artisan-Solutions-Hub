@@ -1,4 +1,4 @@
-name: Recovery G1 baseline verification
+name: Recovery G1 verification
 
 on:
   pull_request:
@@ -24,16 +24,20 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - name: Check out recovery branch with full history
+      - name: Check out recovery source with full history
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
-      - name: Pin the application baseline
-        id: baseline
+      - name: Verify recovery lineage
+        id: source
         run: |
-          git checkout c43c34f328870e7b66dc7b42deac673dbd91f0e1
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          recovery_sha="$(git rev-parse HEAD)"
+          baseline_sha="$(git merge-base HEAD origin/main)"
+          test "$baseline_sha" = "c43c34f328870e7b66dc7b42deac673dbd91f0e1"
+          echo "sha=$recovery_sha" >> "$GITHUB_OUTPUT"
+          echo "baseline_sha=$baseline_sha" >> "$GITHUB_OUTPUT"
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -46,7 +50,8 @@ jobs:
           {
             echo "## G1 runtime receipt"
             echo
-            echo "- Baseline SHA: \`${{ steps.baseline.outputs.sha }}\`"
+            echo "- Recovery source SHA: \`${{ steps.source.outputs.sha }}\`"
+            echo "- Application baseline SHA: \`${{ steps.source.outputs.baseline_sha }}\`"
             echo "- Runner: \`$(uname -srm)\`"
             echo "- Node: \`$(node --version)\`"
             echo "- npm: \`$(npm --version)\`"
@@ -66,6 +71,6 @@ jobs:
         run: |
           {
             echo
-            echo "The completed commands above establish only clean-install, TypeScript, and build outcomes for the pinned source snapshot."
+            echo "The completed commands above establish only clean-install, TypeScript, and build outcomes for the recovery source rooted at the recorded application baseline."
             echo "They do not establish browser behavior, accessibility compliance, booking, testimonial authenticity, media rights, or production AI operation."
           } >> "$GITHUB_STEP_SUMMARY"
