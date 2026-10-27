@@ -1,28 +1,32 @@
-# 🦴 Artisan Solutions Hub
+# Artisan Solutions Hub — contractor-service UX prototype
 
-> *A creative services marketplace hub — connecting artisan makers with clients through a structured design and production workflow.*
+> **Portfolio recovery status:** this repository contains a source-inspected prototype, not a deployed or operating contractor service.
 
-Artisan Solutions Hub is a fullstack platform prototype for productizing artisan creative services. It provides a structured workspace for managing client projects, deliverables, and creative workflows — designed for independent designers, fabricators, and creative technologists. Originally prototyped in Replit.
+The executable application implements an **A-Team Repair Solutions** contractor-service experience: package discovery, a service-to-estimate-request handoff, lead intake, a gallery, and an AI concept-image route. The earlier marketplace framing remains a future product direction, not a description of the current implementation.
 
-## Vision
+## What this source contains
 
-This project sits at the intersection of creative services productization and marketplace design — enabling artisans (digital and physical) to offer structured, repeatable service packages with clear scopes, timelines, and deliverables.
+- `Services.tsx` links service packages to `/schedule?service=…`.
+- `Schedule.tsx` and `ShowMySpace.tsx` contain client-side Zod validation and API submission paths.
+- `Gallery.tsx` contains filtering, gallery-modal, before/after, and portfolio-showcase interaction patterns.
+- `SpaceVisualizer.tsx` and `server/routes.ts` contain an AI concept-image request path.
 
-## Intended Features
+These are source-inspected capabilities, not runtime, browser, accessibility, or production certifications.
 
-- Service package builder (scope, pricing, deliverables)
-- Client project tracking and communication
-- Portfolio showcase with work samples
-- Integration with digital product storefronts (Gumroad, Etsy)
+## Evidence and limits
 
-## Status
+The current recovery baseline, safe claim register, reproducible G1 command receipt, G2 browser matrix, and G3 trust boundaries are in [the Issue #2 recovery evidence ledger](docs/proofs/issue-2-g0-g3-recovery-evidence-ledger.md).
 
-Prototype-stage — migrated from Replit. Product architecture under definition.
+Until that evidence is completed, do **not** infer or claim:
 
-## Stack
+- a deployed product, working calendar booking, confirmation email, or Google Meet generation;
+- authenticated client testimonials, completed-project counts, ratings, adoption, licensure, insurance, guarantees, or response-time commitments;
+- permission or provenance for gallery media or before/after pairs;
+- accessibility compliance; or
+- production-ready AI imagery, construction feasibility, pricing, safety, or code-compliance guidance.
+
+## Technical baseline
 
 `TypeScript` · `React` · `Vite` · `Express` · `Drizzle ORM`
 
----
-
-*Part of the qt314wink creative technologist portfolio — Philadelphia, 2026.*
+The baseline for recovery is `main` at `c43c34f328870e7b66dc7b42deac673dbd91f0e1`. Do not treat earlier Replit preview activity as current verification.

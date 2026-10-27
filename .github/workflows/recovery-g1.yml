@@ -1,0 +1,76 @@
+name: Recovery G1 verification
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/recovery-g1.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "script/**"
+      - "server/**"
+      - "shared/**"
+      - "client/**"
+      - "tsconfig.json"
+      - "vite.config.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clean-install-typecheck-build:
+    name: Clean install, type check, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out recovery source with full history
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Verify recovery lineage
+        id: source
+        run: |
+          recovery_sha="$(git rev-parse HEAD)"
+          baseline_sha="$(git merge-base HEAD origin/main)"
+          test "$baseline_sha" = "c43c34f328870e7b66dc7b42deac673dbd91f0e1"
+          echo "sha=$recovery_sha" >> "$GITHUB_OUTPUT"
+          echo "baseline_sha=$baseline_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+          cache: npm
+
+      - name: Record runtime
+        run: |
+          {
+            echo "## G1 runtime receipt"
+            echo
+            echo "- Recovery source SHA: \`${{ steps.source.outputs.sha }}\`"
+            echo "- Application baseline SHA: \`${{ steps.source.outputs.baseline_sha }}\`"
+            echo "- Runner: \`$(uname -srm)\`"
+            echo "- Node: \`$(node --version)\`"
+            echo "- npm: \`$(npm --version)\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Type check
+        run: npm run check
+
+      - name: Production build
+        run: npm run build
+
+      - name: Record result boundary
+        if: always()
+        run: |
+          {
+            echo
+            echo "The completed commands above establish only clean-install, TypeScript, and build outcomes for the recovery source rooted at the recorded application baseline."
+            echo "They do not establish browser behavior, accessibility compliance, booking, testimonial authenticity, media rights, or production AI operation."
+          } >> "$GITHUB_STEP_SUMMARY"

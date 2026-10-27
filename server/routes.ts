@@ -574,12 +574,15 @@ Write a compelling, detailed visualization of the transformed space in 3-4 sente
         size: "1024x1024",
       });
 
-      const imageBase64 = imageResponse.data[0]?.b64_json;
+      const imageBase64 = imageResponse.data?.[0]?.b64_json;
+      if (!imageBase64) {
+        return res.status(502).json({ error: "Image generation returned no image data" });
+      }
 
       res.json({
         visualization,
         imageBase64,
-        imageUrl: imageBase64 ? `data:image/png;base64,${imageBase64}` : null,
+        imageUrl: `data:image/png;base64,${imageBase64}`,
       });
     } catch (err: any) {
       console.error("Visualization error:", err);
