@@ -150,7 +150,7 @@ for (const width of [375, 1440]) {
       await page.mouse.down(); await page.mouse.up();
     }
     const clipped = await slider.locator('div[style*="width:"][class*="overflow-hidden"]').first().getAttribute("style");
-    if (!clipped || !/width: (7|8|9)\\d/.test(clipped)) throw Error(`clipped=${clipped}`);
+    if (!clipped || !/width: (7|8|9)\d/.test(clipped)) throw Error(`clipped=${clipped}`);
     return `comparison clip style=${clipped}; source pair identity remains unverified`;
   });
 
