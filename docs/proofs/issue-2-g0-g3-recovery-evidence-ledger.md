@@ -12,7 +12,7 @@
 | Baseline ref | `main` at `c43c34f328870e7b66dc7b42deac673dbd91f0e1` |
 | README blob | `52cbe58095641a0557ae7fd5c14ed56a30496fea` |
 | Source-inspection date | 2026-10-26 |
-| Runtime evidence | Not recorded in this ledger |
+| Runtime evidence | [G1 receipt, 2026-10-27](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40488286520) for recovery source `4d529ea7928ceab641ea11fd3daa83aec602025c`, rooted at the baseline below |
 | Browser evidence | Not recorded in this ledger |
 
 The top-level README previously described an aspirational artisan marketplace, while the application source implements an A-Team Repair Solutions contractor-service prototype. The application commits inspected are dated 2026-03-03; the README baseline commit is dated 2026-05-29. Commit metadata for the inspected application work records Replit Agent-assisted changes. Human design ownership, the scope of agent assistance, and rights/permissions for media remain unconfirmed.
@@ -40,33 +40,23 @@ The top-level README previously described an aspirational artisan marketplace, w
 
 ## G1 — clean-install and build evidence
 
-**Result: not run.**
+**Result: passed for recovery source `4d529ea7928ceab641ea11fd3daa83aec602025c`, whose verified merge-base is baseline `c43c34f328870e7b66dc7b42deac673dbd91f0e1`.** This is not a passing result for the immutable baseline by itself.
 
-No fresh checkout and clean-install command output is attached to this baseline. Run the following from a disposable checkout at the baseline SHA and attach unedited console logs with exit codes:
+A fresh run that checked out the exact baseline first recorded a real failure: [run 40487518065](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40487518065) completed `npm ci`, then `npm run check` exited 2 and the build did not run. The recovery source includes narrowly scoped TypeScript and explicit empty-provider-response handling fixes; the G1 workflow asserts its ancestry before it performs the checks. Do not retroactively call the baseline a G1 pass.
 
-```sh
-git checkout c43c34f328870e7b66dc7b42deac673dbd91f0e1
-node --version
-npm --version
-npm ci
-npm run check
-npm run build
-```
-
-Required receipt fields:
-
-| Field | Required value |
+| Receipt field | Recorded result |
 | --- | --- |
-| Commit SHA | Exact checked-out SHA |
-| OS / architecture | Runner value |
-| Node and npm versions | Direct command output |
-| Lockfile integrity | `npm ci` exit code and log |
-| Type check | `npm run check` exit code and log |
-| Production build | `npm run build` exit code and log |
-| Generated output | `dist/` listing or build summary, with no client data included |
-| Failures | Exact command, exit code, and relevant log excerpt |
+| Workflow receipt | [run 40488286520](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40488286520), job “Clean install, type check, build” |
+| Recovery source SHA | `4d529ea7928ceab641ea11fd3daa83aec602025c` |
+| Verified application baseline | `c43c34f328870e7b66dc7b42deac673dbd91f0e1` |
+| Runner | GitHub-hosted Ubuntu 24.04.5 x64 |
+| Runtime | Node `v22.23.2`; npm `10.9.8` |
+| Clean install | `npm ci` passed; 482 packages added. The command reported 22 audit vulnerabilities (1 low, 4 moderate, 16 high, 1 critical); they were not remediated or assessed by this proof sprint. |
+| Type check | `npm run check` (`tsc`) passed |
+| Production build | `npm run build` passed; Vite client build and bundled server completed |
+| Build observations | The log reports stale Browserslist data, a PostCSS `from`-option warning, and a 1.1 MB server bundle warning. These were not treated as passing-quality or production-readiness findings. |
 
-Do not convert an earlier Replit preview, source inspection, or a successful install on another commit into G1 evidence.
+The receipt proves only the named commands for that recovery source. It does not establish browser behavior, accessibility compliance, booking, testimonial authenticity, media rights, user adoption, or production AI operation. Earlier Replit previews and source inspection remain insufficient substitutes for this recorded run.
 
 ## G2 — browser proof matrix
 
@@ -101,7 +91,7 @@ The gallery source has both `onClick` and `onTouchEnd` card handlers. It calls `
 
 ## Next bounded verification action
 
-Run G1 against the pinned SHA in a fresh checkout. If—and only if—`npm ci`, `npm run check`, and `npm run build` have recorded results, start a disposable runtime with a non-production database and execute the G2 matrix. Keep the public-facing case study blocked until the booking, testimonial, media, and AI boundaries above are either removed from its captures or independently evidenced.
+G1 is recorded for the recovery source above; G2 remains unrun. Start G2 only in a disposable runtime with a non-production database, then attach the matrix’s dated browser receipts. Keep the public-facing case study blocked until the booking, testimonial, media, and AI boundaries above are either removed from its captures or independently evidenced.
 
 ## Evidence boundary
 
