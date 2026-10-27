@@ -107,8 +107,13 @@ export default function Schedule() {
     },
   });
 
+  type EstimateResponse = { meetLink?: string | null };
+
   const mutation = useMutation({
-    mutationFn: (data: FormValues) => apiRequest("POST", "/api/estimates", data),
+    mutationFn: async (data: FormValues) => {
+      const response = await apiRequest("POST", "/api/estimates", data);
+      return response.json() as Promise<EstimateResponse>;
+    },
     onSuccess: (data) => setConfirmed({ meetLink: data.meetLink || "https://meet.google.com" }),
     onError: () => {
       toast({ title: "Something went wrong", description: "Please try again.", variant: "destructive" });
