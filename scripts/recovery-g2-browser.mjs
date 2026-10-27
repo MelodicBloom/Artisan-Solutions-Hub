@@ -116,6 +116,7 @@ for (const width of [375, 1440]) {
     await card.click();
     const count = await page.getByRole("dialog").count();
     await page.getByTestId("close-modal-button").click();
+    await page.getByRole("dialog").waitFor({ state: "hidden" });
     const focused = await card.evaluate(el => document.activeElement === el);
     if (count !== 1 || filtered >= initial || !focused) throw Error(`initial=${initial}, filtered=${filtered}, dialogs=${count}, focusReturned=${focused}`);
     return `initial=${initial}, filtered=${filtered}, dialogs=${count}, focusReturned=${focused}`;
@@ -129,6 +130,7 @@ for (const width of [375, 1440]) {
     else { await card.focus(); await page.keyboard.press("Enter"); }
     const count = await page.getByRole("dialog").count();
     await page.keyboard.press("Escape");
+    await page.getByRole("dialog").waitFor({ state: "hidden" });
     const closed = await page.getByRole("dialog").count();
     if (count !== 1 || closed !== 0) throw Error(`dialogsAfterAction=${count}, afterEscape=${closed}`);
     return `dialogsAfterAction=${count}, afterEscape=${closed}`;
