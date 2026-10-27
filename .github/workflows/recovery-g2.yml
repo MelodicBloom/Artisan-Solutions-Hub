@@ -1,0 +1,75 @@
+name: Recovery G2 browser observations
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/recovery-g2.yml"
+      - "scripts/recovery-g2-browser.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - "client/**"
+      - "server/**"
+      - "shared/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-observations:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: recovery
+          POSTGRES_PASSWORD: recovery
+          POSTGRES_DB: recovery
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U recovery -d recovery"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://recovery:recovery@127.0.0.1:5432/recovery
+      PORT: 5000
+      NODE_ENV: production
+      BASE_URL: http://127.0.0.1:5000
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+          cache: npm
+      - name: Install and prepare disposable runtime
+        run: |
+          npm ci
+          npm run db:push -- --force
+          npm run build
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start application and wait for API
+        run: |
+          npm run start > "$RUNNER_TEMP/recovery-g2-server.log" 2>&1 &
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent "$BASE_URL/api/gallery" > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          tail -n 100 "$RUNNER_TEMP/recovery-g2-server.log"
+          exit 1
+      - name: Capture browser observations
+        run: node scripts/recovery-g2-browser.mjs
+      - name: Upload observation receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue-2-g2-browser-observations
+          path: |
+            artifacts/recovery-g2/
+          if-no-files-found: warn
