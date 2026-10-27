@@ -11,7 +11,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const categories = ["All", "Custom Builds", "Countertops", "Lighting & Walls", "Epoxy & Flooring", "Lighting & Fixtures"];
 
-function PanoramicCard({ item, onClick }: { item: GalleryItem; onClick: () => void }) {
+function PanoramicCard({ item, onClick }: { item: GalleryItem; onClick: (trigger: HTMLDivElement) => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState(false);
   const [pos, setPos] = useState({ x: 0.5, y: 0.5 });
@@ -40,9 +40,9 @@ function PanoramicCard({ item, onClick }: { item: GalleryItem; onClick: () => vo
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => { setHover(false); setPos({ x: 0.5, y: 0.5 }); }}
-        onClick={(e) => { e.stopPropagation(); onClick(); }}
-        onTouchEnd={(e) => { e.preventDefault(); onClick(); }}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
+        onClick={(e) => { e.stopPropagation(); onClick(e.currentTarget); }}
+        onTouchEnd={(e) => { e.preventDefault(); onClick(e.currentTarget); }}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e.currentTarget); } }}
         data-testid={`gallery-item-${item.id}`}
       >
         <div
@@ -105,9 +105,9 @@ function PanoramicCard({ item, onClick }: { item: GalleryItem; onClick: () => vo
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => { setHover(false); setPos({ x: 0.5, y: 0.5 }); }}
-      onClick={(e) => { e.stopPropagation(); onClick(); }}
-      onTouchEnd={(e) => { e.preventDefault(); onClick(); }}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
+      onClick={(e) => { e.stopPropagation(); onClick(e.currentTarget); }}
+      onTouchEnd={(e) => { e.preventDefault(); onClick(e.currentTarget); }}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(e.currentTarget); } }}
       data-testid={`gallery-item-${item.id}`}
     >
       <div
@@ -204,6 +204,7 @@ export default function Gallery() {
   useDocumentTitle("Before & After Gallery — Philadelphia Home Transformations");
   const [activeCategory, setActiveCategory] = useState("All");
   const [selected, setSelected] = useState<GalleryItem | null>(null);
+  const openerRef = useRef<HTMLDivElement | null>(null);
   const [showAfter, setShowAfter] = useState(true);
   const [sliderPos, setSliderPos] = useState(50);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -289,7 +290,7 @@ export default function Gallery() {
                 <PanoramicCard
                   key={item.id}
                   item={item}
-                  onClick={() => { setSelected(item); setShowAfter(true); setSliderPos(50); }}
+                  onClick={(trigger) => { openerRef.current = trigger; setSelected(item); setShowAfter(true); setSliderPos(50); }}
                 />
               ))}
             </div>
@@ -302,7 +303,7 @@ export default function Gallery() {
       </section>
 
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
-        <DialogContent className="max-w-5xl max-h-[80vh] overflow-y-auto bg-charcoal-dark border-white/10 p-0 mx-4 sm:mx-auto my-[10vh]" aria-describedby={undefined}>
+        <DialogContent className="max-w-5xl max-h-[80vh] overflow-y-auto bg-charcoal-dark border-white/10 p-0 mx-4 sm:mx-auto my-[10vh]" aria-describedby={undefined} onCloseAutoFocus={(event) => { event.preventDefault(); openerRef.current?.focus(); }}>
           {selected && (
             <div>
               <DialogTitle className="sr-only">{selected.title} — {selected.beforeImage === selected.afterImage ? "Portfolio Showcase" : "Before & After Comparison"}</DialogTitle>
