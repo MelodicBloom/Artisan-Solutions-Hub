@@ -56,11 +56,11 @@ A fresh run that checked out the exact baseline first recorded a real failure: [
 | Production build | `npm run build` passed; Vite client build and bundled server completed |
 | Build observations | The log reports stale Browserslist data, a PostCSS `from`-option warning, and a 1.1 MB server bundle warning. These were not treated as passing-quality or production-readiness findings. |
 
-The receipt proves only the named commands for that recovery source. It does not establish browser behavior, accessibility compliance, booking, testimonial authenticity, media rights, user adoption, or production AI operation. Earlier Replit previews and source inspection remain insufficient substitutes for this recorded run.
+A later [G1 run at the gallery-focus recovery head](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40536497014) also passed the same install, check, and build steps at `6f4246d866efb4a4af4af667af6cde37e7078d1d`. The receipt proves only the named commands for each recovery source. It does not establish browser behavior, accessibility compliance, booking, testimonial authenticity, media rights, user adoption, or production AI operation. Earlier Replit previews and source inspection remain insufficient substitutes for this recorded run.
 
 ## G2 — browser proof matrix
 
-**Result: partially recorded; not passed.** One honest receipt exists for the static specimen homepage at 375px and 1440px. Every interactive flow remains unverified because the specimen has no API backend.
+**Result: two contexts recorded; full G2 remains open.** The static Vercel specimen homepage receipt below has no API backend. A separate disposable Express + PostgreSQL browser receipt now exercises 20 interactions at 375px and 1440px; it does not validate the static deployment or resolve its deep-link 404.
 
 ### Receipt: static specimen homepage
 
@@ -96,6 +96,25 @@ The receipt proves only the named commands for that recovery source. It does not
 | AI disabled/error | pending | pending | On the specimen, `POST /api/visualize` returns 404, so the provider is effectively unavailable. The UI error state was not captured |
 
 The gallery source has both `onClick` and `onTouchEnd` card handlers. It calls `preventDefault()` in the touch handler, but the one-tap/one-action behavior still requires browser evidence.
+
+### Receipt: disposable full-stack runtime
+
+The [G2 workflow run 40536497062](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40536497062) checked out `6f4246d866efb4a4af4af667af6cde37e7078d1d`, built the client/server, initialized a GitHub Actions PostgreSQL 16 service, started Express at `http://127.0.0.1:5000`, and ran headless Chromium with `prefers-reduced-motion: reduce`. Its [artifact](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40536497062#artifacts) contains `receipt.json` and 20 viewport screenshots (artifact ID `12749206155`, SHA-256 `6a614f87761a4805e39843dd98f6c912b23a0d1d7f84bbbdf4c6c52aa8060454`). The test used fictitious `example.invalid` contact data and an inert loopback AI configuration. The run recorded **20 passing scripted observations, zero failing assertions**. This describes the tested recovery head in the isolated CI runtime only.
+
+| Flow | 375px | 1440px | Observed boundary |
+| --- | --- | --- | --- |
+| Package to Schedule | pass | pass | Selected Moving Day package survives in the Schedule selector |
+| Estimate form | pass | pass | Blank name and malformed email feedback visible; fictitious valid POST returned 201 |
+| Lead form | pass | pass | Blank name and malformed email feedback visible; fictitious valid POST returned 201 |
+| Gallery filtering and dialog | pass | pass | 25 seeded items narrowed to 6 Countertops; one dialog opens; close control dismisses it and focus returns to the card after the recovery focus fix |
+| Card input | one tap/one dialog observed | Enter opens; Escape closes | No duplicate dialog observed on the tested gesture |
+| Comparison | tap changed clip to approximately 79% | mouse changed clip to approximately 79% | Gesture position changed the CSS comparison clip; media identity, image pairing, and visual correctness remain unverified |
+| Layout and motion preference | no document overflow; preference active | no document overflow; preference active | Other routes, reachable controls, animation behavior, and assistive technology were not audited |
+| AI failure path | pass | pass | Injected HTTP 503 displayed failure toast and no generated result; no provider request was made |
+
+The first runtime browser run [40536059252](https://github.com/MelodicBloom/Artisan-Solutions-Hub/actions/runs/40536059252) found focus did not return to the gallery card on close at either width. The source fix records the opener element and restores focus on dialog close; the passing run above verifies this specific regression. Escape assertions were initially checked before the exit transition; the harness now waits for dialog closure.
+
+**Still pending for full G2:** overlay dismissal, portfolio showcase mode, an actual touch drag rather than a tap on the comparison, controls across all primary routes, and visual review of the screenshots. Simulating `prefers-reduced-motion` establishes the browser preference state, not that every animation honors it. The static specimen still has API 404s and direct deep-link 404s. Do not publish its captures as project proof while the unverified homepage claims remain visible.
 
 ## G3 — operational and trust boundaries
 
@@ -133,9 +152,9 @@ The gallery source has both `onClick` and `onTouchEnd` card handlers. It calls `
 
 ## Next bounded verification action
 
-1. Remove or substantiate the homepage statistics and the over-promising Schedule success copy, then recapture G2 at 375px and 1440px.
-2. Run the server build against a disposable Postgres (non-production), then fill the blocked G2 rows (estimate, lead, gallery, touch, slider, AI-unavailable).
-3. Optionally add an SPA rewrite to the specimen so deep links do not 404. Note the specimen has no API backend in any recruiter-facing caption.
+1. Inspect the uploaded G2 screenshots and close the remaining browser rows: overlay dismissal, showcase mode, touch drag, route controls, and observed reduced-motion behavior.
+2. Remove or independently substantiate the homepage statistics and the Schedule/lead follow-up promises before a recruiter-facing capture. Verify revised copy in the disposable runtime at both widths.
+3. Decide whether the static specimen should gain an SPA rewrite and backend, or remain explicitly labeled a frontend specimen with nonfunctional API routes. G3 and G4 remain blocked pending provenance, media rights, and recruiter-safe content.
 
 ## Evidence boundary
 
