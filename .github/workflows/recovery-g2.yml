@@ -36,7 +36,6 @@ jobs:
     env:
       DATABASE_URL: postgresql://recovery:recovery@127.0.0.1:5432/recovery
       PORT: 5000
-      NODE_ENV: production
       BASE_URL: http://127.0.0.1:5000
       CI: true
     steps:
@@ -56,7 +55,7 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Start application and wait for API
         run: |
-          npm run start > "$RUNNER_TEMP/recovery-g2-server.log" 2>&1 &
+          NODE_ENV=production npm run start > "$RUNNER_TEMP/recovery-g2-server.log" 2>&1 &
           for attempt in $(seq 1 45); do
             if curl --fail --silent "$BASE_URL/api/gallery" > /dev/null; then exit 0; fi
             sleep 2
